@@ -1,5 +1,9 @@
 import { Client, Message } from "whatsapp-web.js";
-import { IncomingWhatsAppMessage, WhatsAppMessage } from "./types";
+import {
+  IncomingWhatsAppMessage,
+  WhatsAppChatList,
+  WhatsAppMessage,
+} from "./types";
 
 export type MessageHandler = (
   message: IncomingWhatsAppMessage,
@@ -29,18 +33,21 @@ export const registerListeners = (
   });
 };
 
-export const AdminListener = (client: Client) => {
+export const AdminListener = async (
+  client: Client,
+  onMessage: () => Promise<void>,
+) => {
   client.on("message_create", async (msg) => {
     const isOutgoing = msg.fromMe;
     const isGroup = msg.from.endsWith("@g.us");
     const isSelfChat = msg.fromMe && msg.from === msg.to;
 
-    console.log({
-      body: msg.body,
-      fromMe: isOutgoing,
-      isGroup,
-      isSelfChat,
-    });
+    // console.log({
+    //   body: msg.body,
+    //   fromMe: isOutgoing,
+    //   isGroup,
+    //   isSelfChat,
+    // });
 
     // Ignore bot loops
     if (isOutgoing && !isSelfChat) return;
@@ -48,10 +55,11 @@ export const AdminListener = (client: Client) => {
     // Self chat = admin channel
     if (isSelfChat) {
       console.log("Admin command:", msg.body);
+      await onMessage();
       return;
     }
 
     // Normal incoming message
-    console.log("User message:", msg.body);
+    // console.log("User message:", msg.body);
   });
 };

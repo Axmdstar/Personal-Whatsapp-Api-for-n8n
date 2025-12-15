@@ -1,12 +1,13 @@
 import { Message } from "whatsapp-web.js";
-import { WhatsAppMedia } from "./types";
+import { WhatsAppMedia, WhatsAppMessage } from "./types";
 
 export const downloadMedia = async (
-  message: Message,
+  message: Message | WhatsAppMessage,
 ): Promise<WhatsAppMedia | null> => {
   if (!message.hasMedia) return null;
 
-  const media = await message.downloadMedia();
+  const msg = message as Message;
+  const media = await msg.downloadMedia();
   if (!media) return null;
 
   return {

@@ -36,6 +36,6 @@ export const WhatsAppAPI = () => {
     fetchHistory: (chatId: string, limit?: number) =>
       fetchChatHistory(client, chatId, limit),
     Chatlist: async () => await GetChats(client),
-    onSelfMessage: () => AdminListener(client),
+    onSelfMessage: (handler: any) => AdminListener(client, handler),
   };
 };

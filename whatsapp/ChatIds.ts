@@ -1,87 +1,53 @@
-import { Client } from "whatsapp-web.js";
+import WAWebJS, { Client, GroupChat, PrivateChat } from "whatsapp-web.js";
 import { WhatsAppChatList } from "./types";
 
 export const GetChats = async (client: Client): Promise<WhatsAppChatList> => {
   const ChatList = await client.getChats();
 
-  console.info("Chat: ", ChatList);
+  const privateChats: WAWebJS.PrivateChat[] = ChatList.filter(
+    (chat) => !chat.isGroup,
+  ).slice(0, 10);
+  const groupChats = ChatList.filter((chat) => chat.isGroup).slice(0, 10);
+
+  let nameandidprivate = privateChats.map((c) => {
+    return { name: c.name, id: c.id._serialized };
+  });
+
+  let nameandidgroup = groupChats.map((g) => {
+    const groupChat = g as GroupChat;
+    return { name: groupChat.name, id: g.id._serialized };
+  });
+
+  console.log("Private Chats:", nameandidprivate);
+  console.log("Group Chats:", nameandidgroup);
   return ChatList;
 };
 
-// GroupChat {
-//     groupMetadata: {
-//       id: [Object],
-//       creation: 1633978859,
-//       owner: [Object],
-//       subject: 'B3 Science (B)',
-//       subjectTime: 1633980895,
-//       desc: 'Class BE is always frist 💯',
-//       descId: '26760C483AB92C10BDA56CD5F8D0C947',
-//       descTime: 1638481717,
-//       descOwner: [Object],
-//       restrict: true,
-//       announce: false,
-//       noFrequentlyForwarded: false,
-//       ephemeralDuration: 0,
-//       disappearingModeTrigger: 'chat_settings',
-//       membershipApprovalMode: false,
-//       memberAddMode: 'admin_add',
-//       reportToAdminMode: false,
-//       size: 0,
-//       support: false,
-//       suspended: false,
-//       terminated: false,
-//       uniqueShortNameMap: {},
-//       isLidAddressingMode: true,
-//       isParentGroup: false,
-//       isParentGroupClosed: false,
-//       defaultSubgroup: false,
-//       generalSubgroup: false,
-//       generalChatAutoAddDisabled: false,
-//       allowNonAdminSubGroupCreation: false,
-//       lastActivityTimestamp: 0,
-//       lastSeenActivityTimestamp: 0,
-//       hasCapi: false,
-//       participants: [Array],
-//       pendingParticipants: [],
-//       pastParticipants: [Array],
-//       membershipApprovalRequests: [],
-//       subgroupSuggestions: []
-//     },
-//     id: {
-//       server: 'g.us',
-//       user: '252617613034-1633978859',
-//       _serialized: '252617613034-1633978859@g.us'
-//     },
-//     name: 'B3 Science (B)',
-//     isGroup: true,
-//     isReadOnly: false,
-//     unreadCount: 0,
-//     timestamp: 1748805855,
-//     archived: true,
-//     pinned: false,
-//     isMuted: false,
-//     muteExpiration: 0,
-//     lastMessage: undefined
-//   },
-//
-//
-//
-// PrivateChat {
-//   id: {
-//     server: 'c.us',
-//     user: '252771818342',
-//     _serialized: '252771818342@c.us'
-//   },
-//   name: '+252 771818342',
-//   isGroup: false,
-//   isReadOnly: false,
-//   unreadCount: 0,
-//   timestamp: 1753775057,
-//   archived: true,
-//   pinned: false,
-//   isMuted: false,
-//   muteExpiration: 0,
-//   lastMessage: undefined
-// },
-//
+let Private = [
+  { name: "+252 61 4918632", id: "252614918632@c.us" },
+  { name: "Baba Somali", id: "252613044786@c.us" },
+  { name: "Manal Faarax", id: "252770352824@c.us" },
+  { name: "Apdalla", id: "252611632677@c.us" },
+  { name: "ilyaas Cade", id: "252612892752@c.us" },
+  { name: "محمد علي", id: "252616906500@c.us" },
+  { name: "Mama", id: "252612553160@c.us" },
+  { name: "+252 61 3446957", id: "252613446957@c.us" },
+  { name: "+252 61 1240518", id: "252611240518@c.us" },
+  { name: "+252 61 9215670", id: "252619215670@c.us" },
+];
+
+let Group = [
+  { name: "Computer Science (B)", id: "120363028942444813@g.us" },
+  { name: "SNU–EUROSOM Connect", id: "120363424636092364@g.us" },
+  { name: "Family yaanyow", id: "120363423659083387@g.us" },
+  { name: "Test", id: "120363404246210535@g.us" },
+  { name: "GRADUATION 🎓 GROUP 9", id: "120363398099083801@g.us" },
+  { name: "Team ICT", id: "120363025205535542@g.us" },
+  { name: "CS Future Leaders Hub JUS", id: "120363407319427638@g.us" },
+  { name: "Dhool mobile app", id: "120363422936939483@g.us" },
+  { name: "Devs", id: "120363401206923429@g.us" },
+  {
+    name: "Dufcada 16aad Samaside group (siidii-school)",
+    id: "120363140461997289@g.us",
+  },
+];

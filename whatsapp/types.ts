@@ -261,7 +261,7 @@ export interface GroupMetadata {
   subgroupSuggestions: any[];
 }
 
-export interface UniqueShortNameMap {}
+export interface UniqueShortNameMap { }
 
 export interface groupchatId {
   server: string;
