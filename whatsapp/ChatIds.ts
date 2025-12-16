@@ -1,13 +1,15 @@
 import WAWebJS, { Client, GroupChat, PrivateChat } from "whatsapp-web.js";
 import { WhatsAppChatList } from "./types";
 
-export const GetChats = async (client: Client): Promise<WhatsAppChatList> => {
+export const GetChats = async (
+  client: Client,
+): Promise<{ name: string; id: string }[]> => {
   const ChatList = await client.getChats();
 
   const privateChats: WAWebJS.PrivateChat[] = ChatList.filter(
     (chat) => !chat.isGroup,
-  ).slice(0, 10);
-  const groupChats = ChatList.filter((chat) => chat.isGroup).slice(0, 10);
+  );
+  const groupChats = ChatList.filter((chat) => chat.isGroup);
 
   let nameandidprivate = privateChats.map((c) => {
     return { name: c.name, id: c.id._serialized };
@@ -18,9 +20,9 @@ export const GetChats = async (client: Client): Promise<WhatsAppChatList> => {
     return { name: groupChat.name, id: g.id._serialized };
   });
 
-  console.log("Private Chats:", nameandidprivate);
-  console.log("Group Chats:", nameandidgroup);
-  return ChatList;
+  // console.log("Private Chats:", nameandidprivate);
+  // console.log("Group Chats:", nameandidgroup);
+  return [...nameandidprivate, ...nameandidgroup];
 };
 
 let Private = [

@@ -41,9 +41,33 @@ whatsapp.onMessage(async (msg, raw) => {
 });
 
 // NOTE: Feature for later use
-// whatsapp.onSelfMessage(() => {
-//   whatsapp.Chatlist();
-// });
+whatsapp.onSelfMessage(async (msg, raw) => {
+  console.log("Admin self-message received:", msg);
+  let media = null;
+
+  if (msg.hasMedia) {
+    media = await whatsapp.downloadMedia(raw);
+  }
+
+  await sendToN8n({
+    chat: {
+      id: msg.chatId,
+      name: msg.name,
+      isGroup: msg.isGroup,
+    },
+    sender: {
+      id: msg.sender,
+      name: msg.name,
+    },
+    message: {
+      id: msg.id,
+      text: msg.text,
+      hasMedia: msg.hasMedia,
+      timestamp: msg.timestamp,
+    },
+    media,
+  });
+});
 
 whatsapp.start();
 

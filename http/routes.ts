@@ -12,14 +12,15 @@ export const registerActionRoutes = (app: Express) => {
 
       res.json({ success: true });
     } catch (err) {
-      res.status(500).json({ error: "Action failed" });
+      res.status(200).json({ error: "Action failed" });
     }
   });
 
-  app.get("/chathistory/:chatid", async (req: Request, res: Response) => {
-    const chatId = req.params.chatid;
+  app.get("/chathistory", async (req: Request, res: Response) => {
+    const chatId = req.query.chatid as string;
     const limit = parseInt(req.query.limit as string) || 20;
 
+    console.log("Request >>", req);
     try {
       const history = await whatsapp.fetchHistory(chatId, limit);
       res.json({ success: true, history });
@@ -30,14 +31,29 @@ export const registerActionRoutes = (app: Express) => {
 
   app.get("/findchatidby", async (req: Request, res: Response) => {
     const name = req.query.name as string;
+    console.log("Finding chat ID for name:", name);
     try {
-      const chats = await whatsapp.Chatlist();
-      const filtered = chats.filter((chat) =>
-        chat.name.toLowerCase().includes(name.toLowerCase()),
-      );
-      res.json({ success: true, chats: filtered });
+      // Search through chats to find matching names
+      await whatsapp.Chatlist().then((chats) => {
+        const filtered = chats.filter((chat) => {
+          console.log("Checking chat:", chat);
+          if (!chat.name) return false;
+          if (chat.name.toLowerCase().includes(name.toLowerCase())) {
+            console.log("Matched chat:", chat);
+            return true;
+          }
+        });
+        res.json({ status: true, chats: filtered });
+      });
+
+      res.json({ status: "Chat Not Found" });
+      // console.log("Total chats retrieved:", chats.length, chats[0]);
+      // if (chats) {
+
+      // }
     } catch (err) {
-      res.status(500).json({ error: "Failed to find chats" });
+      console.error("Error finding chats:", err);
+      res.status(200).json({ status: "Failed to find chats" });
     }
   });
 };

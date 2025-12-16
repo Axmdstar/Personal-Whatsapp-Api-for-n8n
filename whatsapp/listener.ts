@@ -35,28 +35,32 @@ export const registerListeners = (
 
 export const AdminListener = async (
   client: Client,
-  onMessage: () => Promise<void>,
+  onMessage: MessageHandler,
 ) => {
-  client.on("message_create", async (msg) => {
-    const isOutgoing = msg.fromMe;
-    const isGroup = msg.from.endsWith("@g.us");
-    const isSelfChat = msg.fromMe && msg.from === msg.to;
-
-    // console.log({
-    //   body: msg.body,
-    //   fromMe: isOutgoing,
-    //   isGroup,
-    //   isSelfChat,
-    // });
+  client.on("message_create", async (message: WhatsAppMessage) => {
+    const isOutgoing = message.fromMe;
+    const isGroup = message.from.endsWith("@g.us");
+    const isSelfChat = message.fromMe && message.from === message.to;
 
     // Ignore bot loops
     if (isOutgoing && !isSelfChat) return;
 
     // Self chat = admin channel
     if (isSelfChat) {
-      console.log("Admin command:", msg.body);
-      await onMessage();
-      return;
+      console.log("Admin command:", message.body);
+      const data: IncomingWhatsAppMessage = {
+        id: message.id._serialized,
+        chatId: message.from,
+        from: message.from,
+        name: message._data.notifyName || "Unknown",
+        isGroup: isGroup,
+        sender: message.author,
+        text: message.body,
+        hasMedia: message.hasMedia,
+        timestamp: message.timestamp,
+      };
+
+      await onMessage(data, message);
     }
 
     // Normal incoming message

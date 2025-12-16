@@ -3,14 +3,14 @@ import { IncomingWhatsAppMessage } from "../whatsapp/types";
 import config from "../configs/config";
 
 export const sendToN8n = async (message: any) => {
-  console.info("Webhooking to n8n: ", config.N8nWebhookTest);
+  console.info("Webhooking to n8n: ", config.N8nWebhookProduction);
   try {
     // const data = await axios.post(config.N8nWebhookTest, {
     //   source: "whatsapp",
     //   ...message,
     // });
 
-    const data = await axios.post(config.N8nWebhookTest, message, {
+    const data = await axios.post(config.N8nWebhookProduction, message, {
       maxBodyLength: Infinity,
     });
 
