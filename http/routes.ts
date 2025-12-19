@@ -20,7 +20,6 @@ export const registerActionRoutes = (app: Express) => {
     const chatId = req.query.chatid as string;
     const limit = parseInt(req.query.limit as string) || 20;
 
-    console.log("Request >>", req);
     try {
       const history = await whatsapp.fetchHistory(chatId, limit);
       res.json({ success: true, history });
@@ -33,13 +32,11 @@ export const registerActionRoutes = (app: Express) => {
     const name = req.query.name as string;
     console.log("Finding chat ID for name:", name);
     try {
-      // Search through chats to find matching names
+      // NOTE: Search through chats to find matching names
       await whatsapp.Chatlist().then((chats) => {
         const filtered = chats.filter((chat) => {
-          console.log("Checking chat:", chat);
           if (!chat.name) return false;
           if (chat.name.toLowerCase().includes(name.toLowerCase())) {
-            console.log("Matched chat:", chat);
             return true;
           }
         });
@@ -47,12 +44,7 @@ export const registerActionRoutes = (app: Express) => {
       });
 
       res.json({ status: "Chat Not Found" });
-      // console.log("Total chats retrieved:", chats.length, chats[0]);
-      // if (chats) {
-
-      // }
     } catch (err) {
-      console.error("Error finding chats:", err);
       res.status(200).json({ status: "Failed to find chats" });
     }
   });

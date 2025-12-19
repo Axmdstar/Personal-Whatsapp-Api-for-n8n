@@ -5,21 +5,22 @@ import { AllowedList } from "./whatsapp/AllowedList";
 
 const app = createHttpServer();
 
+// NOTE: Listen for incoming WhatsApp messages
 whatsapp.onMessage(async (msg, raw) => {
+  // NOTE: Check if the message is from an allowed contact or group
   const isAllowed = AllowedList(msg);
   if (!isAllowed) {
-    console.log("Message from unallowed source:", msg.chatId, msg.name);
     return;
   }
 
   console.log("Allowed message from:", msg.chatId, msg.name);
 
   let media = null;
-
   if (msg.hasMedia) {
     media = await whatsapp.downloadMedia(raw);
   }
 
+  // NOTE: Send the message data to n8n workflow
   await sendToN8n({
     chat: {
       id: msg.chatId,
@@ -40,11 +41,10 @@ whatsapp.onMessage(async (msg, raw) => {
   });
 });
 
-// NOTE: Feature for later use
 whatsapp.onSelfMessage(async (msg, raw) => {
   console.log("Admin self-message received:", msg);
-  let media = null;
 
+  let media = null;
   if (msg.hasMedia) {
     media = await whatsapp.downloadMedia(raw);
   }
