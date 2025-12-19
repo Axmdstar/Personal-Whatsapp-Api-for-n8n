@@ -3,9 +3,8 @@ import { whatsapp } from "../runtime";
 
 export const registerActionRoutes = (app: Express) => {
   app.post("/actions", async (req: Request, res: Response) => {
-    const { action, chatId, payload } = req.body;
-
     try {
+      const { action, chatId, payload } = req.body;
       if (action === "send_text") {
         await whatsapp.sendText(chatId, payload);
       }
@@ -17,10 +16,10 @@ export const registerActionRoutes = (app: Express) => {
   });
 
   app.get("/chathistory", async (req: Request, res: Response) => {
-    const chatId = req.query.chatid as string;
-    const limit = parseInt(req.query.limit as string) || 20;
-
     try {
+      const chatId = req.query.chatid as string;
+      const limit = parseInt(req.query.limit as string) || 20;
+
       const history = await whatsapp.fetchHistory(chatId, limit);
       res.json({ success: true, history });
     } catch (err) {
@@ -29,9 +28,10 @@ export const registerActionRoutes = (app: Express) => {
   });
 
   app.get("/findchatidby", async (req: Request, res: Response) => {
-    const name = req.query.name as string;
-    console.log("Finding chat ID for name:", name);
     try {
+      const name = req.query.name as string;
+      console.log("Finding chat ID for name:", name);
+
       // NOTE: Search through chats to find matching names
       await whatsapp.Chatlist().then((chats) => {
         const filtered = chats.filter((chat) => {
