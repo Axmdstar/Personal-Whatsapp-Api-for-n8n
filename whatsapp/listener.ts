@@ -1,9 +1,5 @@
 import { Client, Message } from "whatsapp-web.js";
-import {
-  IncomingWhatsAppMessage,
-  WhatsAppChatList,
-  WhatsAppMessage,
-} from "./types";
+import { IncomingWhatsAppMessage, WhatsAppMessage } from "./types";
 
 export type MessageHandler = (
   message: IncomingWhatsAppMessage,
@@ -62,8 +58,5 @@ export const AdminListener = async (
 
       await onMessage(data, message);
     }
-
-    // Normal incoming message
-    // console.log("User message:", msg.body);
   });
 };
